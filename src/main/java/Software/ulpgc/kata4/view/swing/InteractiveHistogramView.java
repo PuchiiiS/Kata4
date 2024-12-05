@@ -23,7 +23,7 @@ public class InteractiveHistogramView {
     private JPanel buttonPanel;
     private ChartPanel chartPanel;
 
-    public void renderHistogram(Map<Integer, Integer> histogram, File file){
+    public void renderHistogram(Map<Integer, Integer> histogram){
         CategoryDataset dataset = createDataset(histogram);
 
         final JFreeChart chart = ChartFactory.createBarChart(
