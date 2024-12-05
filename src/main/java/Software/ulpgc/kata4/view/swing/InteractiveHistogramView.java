@@ -1,6 +1,7 @@
 package Software.ulpgc.kata4.view.swing;
 
 import Software.ulpgc.kata4.model.MovieRating;
+import Software.ulpgc.kata4.model.RatingRepository;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -25,7 +26,7 @@ public class InteractiveHistogramView {
     public void renderHistogram(Map<Integer, Integer> histogram, File file){
         CategoryDataset dataset = createDataset(histogram);
 
-        final JFreeChart[] chart = {ChartFactory.createBarChart(
+        final JFreeChart chart = ChartFactory.createBarChart(
                 "Histograma Interactivo de Notas",
                 "Rango de Notas",
                 "Frecuencia",
@@ -34,9 +35,9 @@ public class InteractiveHistogramView {
                 false,
                 true,
                 false
-        )};
+        );
 
-        chartPanel = new ChartPanel(chart[0]);
+        chartPanel = new ChartPanel(chart);
 
         frame = new JFrame("Visualizacion");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,7 +50,8 @@ public class InteractiveHistogramView {
         reloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<MovieRating> ratings = new TsvFileRatingReader(file).read();
+                RatingRepository repository = new RatingRepository();
+                List<MovieRating> ratings = repository.getAllRatings();
                 HashMap<Integer, Integer> newHistogram = new HashMap<>();
                 for(MovieRating rating : ratings){
                     int roundedRating = (int) Math.floor(rating.getAverageRating());
@@ -57,7 +59,7 @@ public class InteractiveHistogramView {
                 }
 
                 CategoryDataset newDataset = createDataset(newHistogram);
-                chart[0] = ChartFactory.createBarChart(
+                JFreeChart chart = ChartFactory.createBarChart(
                         "Histograma Interactivo de Notas",
                         "Rango de Notas",
                         "Frecuencia",
@@ -67,7 +69,7 @@ public class InteractiveHistogramView {
                         true,
                         false
                 );
-                chartPanel.setChart(chart[0]);
+                chartPanel.setChart(chart);
             }
         });
 
